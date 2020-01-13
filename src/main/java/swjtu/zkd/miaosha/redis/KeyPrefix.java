@@ -2,7 +2,7 @@ package swjtu.zkd.miaosha.redis;
 
 public interface KeyPrefix {
 
-    int expireSeconds();
+    int getExpireSeconds();
 
     String getPrefix();
 }

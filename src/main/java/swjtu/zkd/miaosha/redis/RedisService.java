@@ -53,7 +53,7 @@ public class RedisService {
                 return false;
             }
             String realKey = prefix.getPrefix() + key;
-            int expireSeconds = prefix.expireSeconds();
+            int expireSeconds = prefix.getExpireSeconds();
             if (expireSeconds <= 0) {
                 jedis.set(realKey, str);
             } else {
