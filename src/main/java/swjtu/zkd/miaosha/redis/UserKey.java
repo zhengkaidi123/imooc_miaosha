@@ -2,11 +2,13 @@ package swjtu.zkd.miaosha.redis;
 
 public class UserKey extends BasePrefix {
 
-    public static UserKey idPrefix = new UserKey("id");
+    public static final int TOKEN_EXPIRE = 3600 * 24 * 2;
 
-    public static UserKey namePrefix = new UserKey("name");
+    public static UserKey tokenPrefix = new UserKey( TOKEN_EXPIRE,"token");
 
-    private UserKey(String prefix) {
-        super(prefix);
+    private UserKey(int expireSeconds, String prefix) {
+        super(expireSeconds, prefix);
     }
+
+
 }
