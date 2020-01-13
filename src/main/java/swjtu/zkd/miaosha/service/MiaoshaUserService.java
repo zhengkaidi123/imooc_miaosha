@@ -41,11 +41,9 @@ public class MiaoshaUserService {
             throw new GlobalException(CodeMsg.USER_NOT_EXIST);
         }
         String formPassword = loginVO.getPassword();
-        System.out.println("formPassword: " + formPassword);
         String dbPassword = user.getPassword();
         String dbSalt = user.getSalt();
         String calcPassword = MD5Util.formPassToDBPass(formPassword, dbSalt);
-        System.out.println("calcPassword: " + calcPassword);
         if (!dbPassword.equals(calcPassword)) {
             throw new GlobalException(CodeMsg.PASSWORD_ERROR);
         }
