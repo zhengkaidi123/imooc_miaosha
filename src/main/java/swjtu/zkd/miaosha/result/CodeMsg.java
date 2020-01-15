@@ -1,7 +1,6 @@
 package swjtu.zkd.miaosha.result;
 
 import lombok.Getter;
-import sun.print.ServiceDialog;
 
 @Getter
 public class CodeMsg {

@@ -1,7 +1,6 @@
 package swjtu.zkd.miaosha.dao;
 
 import org.apache.ibatis.annotations.*;
-import org.apache.ibatis.mapping.StatementType;
 import swjtu.zkd.miaosha.domain.MiaoshaOrder;
 import swjtu.zkd.miaosha.domain.OrderInfo;
 

@@ -24,3 +24,6 @@
     1. JMeter入门
     2. 自定义变量模拟多用户
     3. JMeter命令行使用
+    4. Redis压测工具redis_benchmark
+    5. Spring Boot打war包
+ 
