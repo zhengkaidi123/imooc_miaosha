@@ -1,6 +1,7 @@
 package swjtu.zkd.miaosha.result;
 
 import lombok.Getter;
+import sun.print.ServiceDialog;
 
 @Getter
 public class CodeMsg {
@@ -22,6 +23,8 @@ public class CodeMsg {
     //订单模块  5004XX
 
     //秒杀模块  5005XX
+    public static final CodeMsg MIAOSHA_OVER = new CodeMsg(500500, "商品已秒杀完毕");
+    public static final CodeMsg REPEATED_MIAOSHA = new CodeMsg(500501, "不能重复秒杀");
 
     private int code;
 
