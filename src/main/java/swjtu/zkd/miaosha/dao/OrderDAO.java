@@ -11,6 +11,8 @@ public interface OrderDAO {
 
     String MIAOSHA_ORDER_TABLE_NAME = "miaosha_order";
 
+    String ORDER_SELECT_FIELDS = " id, user_id, goods_id, delivery_addr_id, goods_name, goods_count, goods_price, order_channel, status, create_date, pay_date ";
+
     String MIAOSHA_SELECT_FIELDS = " id, user_id, order_id, goods_id ";
 
     String ORDER_INSERT_FIELDS = " user_id, goods_id, delivery_addr_id, goods_name, goods_count, goods_price, order_channel, status, create_date, pay_date ";
@@ -27,4 +29,7 @@ public interface OrderDAO {
 
     @Insert({"insert into ", MIAOSHA_ORDER_TABLE_NAME, " (", MIAOSHA_INSERT_FIELDS, ") values (#{userId}, #{goodsId}, #{orderId})"})
     int insertMiaoshaOrder(MiaoshaOrder miaoshaOrder);
+
+    @Select({"select", ORDER_SELECT_FIELDS, "from ", ORDER_TABLE_NAME, " where id = #{orderId}"})
+    OrderInfo getOrderById(@Param("orderId") long orderId);
 }

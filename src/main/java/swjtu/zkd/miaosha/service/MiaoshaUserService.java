@@ -28,7 +28,17 @@ public class MiaoshaUserService {
     private RedisService redisService;
 
     public MiaoshaUser getById(long userId) {
-        return miaoshaUserDAO.getById(userId);
+        // 取缓存
+        MiaoshaUser user = redisService.get(UserKey.userPrefix, String.valueOf(userId), MiaoshaUser.class);
+        if (user != null) {
+            return user;
+        }
+        // 取数据库
+        user = miaoshaUserDAO.getById(userId);
+        if (user != null) {
+            redisService.set(UserKey.userPrefix, String.valueOf(userId), user);
+        }
+        return user;
     }
 
     public boolean login(LoginVO loginVO, HttpServletResponse response) {
@@ -70,5 +80,20 @@ public class MiaoshaUserService {
         cookie.setMaxAge(UserKey.tokenPrefix.getExpireSeconds());
         cookie.setPath("/");
         response.addCookie(cookie);
+    }
+
+    public boolean updatePassword(String token, long userId, String newPassword) {
+        // 取user，复用getById方法（可能有缓存）
+        MiaoshaUser user = getById(userId);
+        if (user == null) {
+            throw new GlobalException(CodeMsg.USER_NOT_EXIST);
+        }
+        String newDBPassword = MD5Util.formPassToDBPass(newPassword, user.getSalt());
+        user.setPassword(newPassword);
+        miaoshaUserDAO.updatePassword(user);
+        // 处理缓存
+        redisService.del(UserKey.userPrefix, String.valueOf(user.getId()));
+        redisService.set(UserKey.tokenPrefix, token, user);
+        return true;
     }
 }

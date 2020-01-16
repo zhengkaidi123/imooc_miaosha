@@ -9,6 +9,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import swjtu.zkd.miaosha.domain.MiaoshaUser;
+import swjtu.zkd.miaosha.exception.GlobalException;
+import swjtu.zkd.miaosha.result.CodeMsg;
 import swjtu.zkd.miaosha.service.MiaoshaUserService;
 
 import javax.servlet.http.Cookie;
@@ -34,11 +36,14 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
         HttpServletResponse response = nativeWebRequest.getNativeResponse(HttpServletResponse.class);
         String paramToken = request.getParameter(MiaoshaUserService.COOKIE_NAME_TOKEN);
         String cookieToken = getCookieValue(request, MiaoshaUserService.COOKIE_NAME_TOKEN);
-        if (StringUtils.isEmpty(cookieToken) && StringUtils.isEmpty(paramToken)) {
-            return "login";
+        if (!StringUtils.isEmpty(cookieToken) || !StringUtils.isEmpty(paramToken)) {
+            String token = StringUtils.isEmpty(paramToken) ? cookieToken : paramToken;
+            MiaoshaUser user = userService.getByToken(response, token);
+            if (user != null) {
+                return user;
+            }
         }
-        String token = StringUtils.isEmpty(paramToken) ? cookieToken : paramToken;
-        return userService.getByToken(response, token);
+        throw new GlobalException(CodeMsg.SESSION_ERROR);
     }
 
     private String getCookieValue(HttpServletRequest request, String cookieName) {
