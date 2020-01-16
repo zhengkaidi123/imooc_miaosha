@@ -1,7 +1,6 @@
 package swjtu.zkd.miaosha.dao;
 
 import org.apache.ibatis.annotations.*;
-import org.apache.ibatis.mapping.StatementType;
 import swjtu.zkd.miaosha.domain.MiaoshaOrder;
 import swjtu.zkd.miaosha.domain.OrderInfo;
 
@@ -11,6 +10,8 @@ public interface OrderDAO {
     String ORDER_TABLE_NAME = "order_info";
 
     String MIAOSHA_ORDER_TABLE_NAME = "miaosha_order";
+
+    String ORDER_SELECT_FIELDS = " id, user_id, goods_id, delivery_addr_id, goods_name, goods_count, goods_price, order_channel, status, create_date, pay_date ";
 
     String MIAOSHA_SELECT_FIELDS = " id, user_id, order_id, goods_id ";
 
@@ -28,4 +29,7 @@ public interface OrderDAO {
 
     @Insert({"insert into ", MIAOSHA_ORDER_TABLE_NAME, " (", MIAOSHA_INSERT_FIELDS, ") values (#{userId}, #{goodsId}, #{orderId})"})
     int insertMiaoshaOrder(MiaoshaOrder miaoshaOrder);
+
+    @Select({"select", ORDER_SELECT_FIELDS, "from ", ORDER_TABLE_NAME, " where id = #{orderId}"})
+    OrderInfo getOrderById(@Param("orderId") long orderId);
 }

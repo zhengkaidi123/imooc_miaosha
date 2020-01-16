@@ -3,6 +3,7 @@ package swjtu.zkd.miaosha.dao;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import swjtu.zkd.miaosha.domain.MiaoshaUser;
 
 @Mapper
@@ -13,4 +14,7 @@ public interface MiaoshaUserDAO {
 
     @Select({"select", ALL_FIELDS, "from ", TABLE_NAME, " where id = #{id}"})
     MiaoshaUser getById(@Param("id") long id);
+
+    @Update({"update ", TABLE_NAME, " set password=#{password} where id=#{id}"})
+    void updatePassword(MiaoshaUser user);
 }

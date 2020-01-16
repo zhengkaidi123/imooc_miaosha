@@ -1,7 +1,6 @@
 package swjtu.zkd.miaosha.result;
 
 import lombok.Getter;
-import sun.print.ServiceDialog;
 
 @Getter
 public class CodeMsg {
@@ -21,6 +20,7 @@ public class CodeMsg {
     //商品模块  5003XX
 
     //订单模块  5004XX
+    public static final CodeMsg ORDER_NOT_EXISTS = new CodeMsg(500400, "订单不存在");
 
     //秒杀模块  5005XX
     public static final CodeMsg MIAOSHA_OVER = new CodeMsg(500500, "商品已秒杀完毕");

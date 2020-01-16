@@ -13,6 +13,8 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>imooc_miaosha</name>
     <description>project miaosha</description>
+    <packaging>jar</packaging>
+<!--    <packaging>war</packaging>-->
 
     <properties>
         <java.version>1.8</java.version>
@@ -88,6 +90,11 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-tomcat</artifactId>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>

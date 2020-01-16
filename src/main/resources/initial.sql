@@ -69,3 +69,6 @@ create table miaosha_order
 		primary key (id)
 ) auto_increment=3;
 
+create unique index u_uid_gid
+	on miaosha.miaosha_order (user_id, goods_id);
+

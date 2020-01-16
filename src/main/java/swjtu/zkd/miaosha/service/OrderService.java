@@ -7,6 +7,8 @@ import swjtu.zkd.miaosha.dao.OrderDAO;
 import swjtu.zkd.miaosha.domain.MiaoshaOrder;
 import swjtu.zkd.miaosha.domain.MiaoshaUser;
 import swjtu.zkd.miaosha.domain.OrderInfo;
+import swjtu.zkd.miaosha.redis.OrderKey;
+import swjtu.zkd.miaosha.redis.RedisService;
 import swjtu.zkd.miaosha.vo.GoodsVO;
 
 import java.util.Date;
@@ -17,9 +19,14 @@ public class OrderService {
     @Autowired
     private OrderDAO orderDAO;
 
+    @Autowired
+    private RedisService redisService;
+
     public MiaoshaOrder getMiaoshaOrderByUserIdAndGoodsId(long userId, long goodsId) {
-        return orderDAO.getMiaoshaOrderByUserIdAndGoodsId(userId, goodsId);
+//        return orderDAO.getMiaoshaOrderByUserIdAndGoodsId(userId, goodsId);
+        return redisService.get(OrderKey.OrderPrefix, "" + userId + goodsId, MiaoshaOrder.class);
     }
+
 
     @Transactional
     public OrderInfo createOrder(MiaoshaUser user, GoodsVO goods) {
@@ -39,6 +46,11 @@ public class OrderService {
         miaoshaOrder.setOrderId(orderId);
         miaoshaOrder.setUserId(user.getId());
         orderDAO.insertMiaoshaOrder(miaoshaOrder);
+        redisService.set(OrderKey.OrderPrefix, "" + user.getId() + goods.getId(), MiaoshaOrder.class);
         return orderInfo;
+    }
+
+    public OrderInfo getOrderById(long orderId) {
+        return orderDAO.getOrderById(orderId);
     }
 }

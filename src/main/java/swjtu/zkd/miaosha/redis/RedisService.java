@@ -114,4 +114,12 @@ public class RedisService {
             return jedis.decr(realKey);
         }
     }
+
+    public boolean del(KeyPrefix prefix, String key) {
+        try (Jedis jedis = jedisPool.getResource()) {
+            String realKey = prefix.getPrefix() + key;
+            Long ret = jedis.del(realKey);
+            return ret > 0;
+        }
+    }
 }
