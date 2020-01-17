@@ -35,3 +35,11 @@
         * 多个JS/CSS组合，减少连接数
         * CDN就近访问
     4. CDN(Content Delivery Network 内容分发网络)优化
+    
+## 第六章 接口优化
+    1. Redis预减库存减少数据库访问
+    2. 内存标记减少Redis访问
+    3. 请求先入队缓冲，异步下单，增强用户体验
+    4. RabbitMQ安装与Spring Boot集成
+    5. Nginx水平扩展
+    6. 压测

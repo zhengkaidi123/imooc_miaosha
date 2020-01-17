@@ -27,7 +27,7 @@ public class OrderController {
 
     @RequestMapping("/detail")
     @ResponseBody
-    public Result<OrderDetailVO> info(@RequestParam("orderId") long orderId, MiaoshaUser miaoshaUser, Model model) {
+    public Result<OrderDetailVO> info(@RequestParam("orderId") long orderId) {
         OrderInfo orderInfo = orderService.getOrderById(orderId);
         if (orderInfo == null) {
             return Result.error(CodeMsg.ORDER_NOT_EXISTS);
