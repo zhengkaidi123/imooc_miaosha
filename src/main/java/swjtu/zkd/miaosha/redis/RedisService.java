@@ -31,9 +31,16 @@ public class RedisService {
         }
     }
 
-    private <T> T stringToBean(String key, Class<T> clazz) {
+    public static <T> T stringToBean(String key, Class<T> clazz) {
         if (key == null || key.length() <= 0 || clazz == null) {
             return null;
+        }
+        if (clazz == int.class || clazz == Integer.class) {
+            return (T) Integer.valueOf(key);
+        } else if (clazz == long.class || clazz == Long.class) {
+            return (T) Long.valueOf(key);
+        } else if (clazz == String.class) {
+            return (T) key;
         }
         return JSONObject.parseObject(key, clazz);
     }
@@ -66,9 +73,17 @@ public class RedisService {
         }
     }
 
-    private <T> String beanToString(T value) {
+    public static <T> String beanToString(T value) {
         if (value == null) {
             return null;
+        }
+        Class<?> clazz = value.getClass();
+        if (clazz == int.class || clazz == Integer.class) {
+            return "" + value;
+        } else if (clazz == long.class || clazz == Long.class) {
+            return "" + value;
+        } else if (clazz == String.class) {
+            return (String) value;
         }
         return JSONObject.toJSONString(value);
     }
