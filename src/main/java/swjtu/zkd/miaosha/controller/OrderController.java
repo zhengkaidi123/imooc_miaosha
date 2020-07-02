@@ -2,11 +2,9 @@ package swjtu.zkd.miaosha.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import swjtu.zkd.miaosha.domain.MiaoshaUser;
 import swjtu.zkd.miaosha.domain.OrderInfo;
 import swjtu.zkd.miaosha.result.CodeMsg;
 import swjtu.zkd.miaosha.result.Result;

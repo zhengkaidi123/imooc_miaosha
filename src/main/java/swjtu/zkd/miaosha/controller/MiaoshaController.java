@@ -3,11 +3,11 @@ package swjtu.zkd.miaosha.controller;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import swjtu.zkd.miaosha.config.AccessLimit;
 import swjtu.zkd.miaosha.domain.MiaoshaOrder;
 import swjtu.zkd.miaosha.domain.MiaoshaUser;
-import swjtu.zkd.miaosha.domain.OrderInfo;
+import swjtu.zkd.miaosha.exception.GlobalException;
 import swjtu.zkd.miaosha.rabbitmq.MQSender;
 import swjtu.zkd.miaosha.rabbitmq.MiaoshaMessage;
 import swjtu.zkd.miaosha.redis.GoodsKey;
@@ -19,9 +19,14 @@ import swjtu.zkd.miaosha.service.MiaoshaService;
 import swjtu.zkd.miaosha.service.OrderService;
 import swjtu.zkd.miaosha.vo.GoodsVO;
 
-import java.util.HashMap;
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.awt.image.BufferedImage;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
 @RequestMapping("/miaosha")
@@ -42,7 +47,7 @@ public class MiaoshaController implements InitializingBean {
     @Autowired
     private MQSender mqSender;
 
-    private Map<Long, Boolean> localOverMap = new HashMap<>();
+    private Map<Long, Boolean> localOverMap = new ConcurrentHashMap<>();
 
     /*
         系统初始化
@@ -58,14 +63,49 @@ public class MiaoshaController implements InitializingBean {
         }
     }
 
+    @GetMapping("/path")
+    @ResponseBody
+    @AccessLimit(seconds =  5, maxCount =  5, needLogin = true)
+    public Result<String> getMiaoshaPath(@RequestParam("goodsId") long goodsId, MiaoshaUser user,
+                                         @RequestParam("verifyCode") int verifyCode, HttpServletRequest request) {
+        boolean valid = miaoshaService.checkVerifyCode(user, goodsId, verifyCode);
+        if (!valid) {
+            return Result.error(CodeMsg.REQUEST_ILLEGAL);
+        }
+        String path = miaoshaService.createMiaoshaPath(user, goodsId);
+        return Result.success(path);
+    }
+
+    @GetMapping("/verifyCode")
+    @ResponseBody
+    public Result<String> getMiaoshaVerifyCode(@RequestParam("goodsId") long goodsId, MiaoshaUser user, HttpServletResponse response) {
+        if (goodsId <= 0) {
+            throw new GlobalException(CodeMsg.REQUEST_ILLEGAL);
+        }
+        try (OutputStream out = response.getOutputStream()) {
+            BufferedImage image = miaoshaService.createVerifyCode(user, goodsId);
+            ImageIO.write(image, "JPEG", out);
+            out.flush();
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Result.error(CodeMsg.MIAOSHA_FAIL);
+        }
+    }
+
     /*
         get和post有什么区别？
         get是幂等的，无论调用多少次，结果相同，不会对服务端数据产生影响
         post是非幂等的
          */
-    @PostMapping("/do_miaosha")
+    @PostMapping("/{path}/do_miaosha")
     @ResponseBody
-    public Result<Integer> list(@RequestParam("goodsId") long goodsId, MiaoshaUser user) {
+    public Result<Integer> list(@RequestParam("goodsId") long goodsId, MiaoshaUser user, @PathVariable("path") String path) {
+        // 验证path
+        boolean valid = miaoshaService.checkPath(user, goodsId, path);
+        if (!valid) {
+            return Result.error(CodeMsg.REQUEST_ILLEGAL);
+        }
         // 内存标记，减少Redis访问
         boolean miaoshaOver = localOverMap.get(goodsId);
         if (miaoshaOver) {

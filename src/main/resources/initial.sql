@@ -1,4 +1,4 @@
-drop table miaosha_user
+drop table miaosha_user;
 create table miaosha_user
 (
     id bigint not null comment '用户ID,手机号码',
@@ -13,7 +13,7 @@ create table miaosha_user
         primary key (id)
 );
 
-drop table goods
+drop table goods;
 create table goods
 (
     id bigint auto_increment comment '商品ID',
@@ -27,7 +27,7 @@ create table goods
         primary key (id)
 ) AUTO_INCREMENT=3;
 
-drop table miaosha_goods
+drop table miaosha_goods;
 create table miaosha_goods
 (
     id bigint auto_increment comment '秒杀的商品表',
@@ -40,7 +40,7 @@ create table miaosha_goods
         primary key (id)
 ) auto_increment=3;
 
-drop table order_info
+drop table order_info;
 create table order_info
 (
 	id bigint auto_increment,
@@ -58,7 +58,7 @@ create table order_info
 		primary key (id)
 ) auto_increment=12;
 
-drop table miaosha_order
+drop table miaosha_order;
 create table miaosha_order
 (
 	id bigint auto_increment,
